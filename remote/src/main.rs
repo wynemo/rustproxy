@@ -13,6 +13,7 @@ async fn forward_data(
     let mut buffer = [0; 4096];
     let mut final_stream = TcpStream::connect((remote_host, remote_port)).await?;
 
+    println!("handle connection {:?}", previous_stream.peer_addr());
     loop {
         // Read data length from the previous server
         let mut length_buffer = [0; 4];
@@ -20,6 +21,7 @@ async fn forward_data(
 
         let length = u32::from_be_bytes(length_buffer);
 
+        println!("read length {:?}", length);
         // Read data from the previous server
         let mut data_buffer = vec![0; length as usize];
         previous_stream.read_exact(&mut data_buffer).await?;

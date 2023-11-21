@@ -9,6 +9,7 @@ async fn handle_client(
     remote_port: u16,
 ) -> Result<(), Box<dyn Error>> {
     // Connect to the remote server
+    println!("handle connection {:?}", client_stream.peer_addr());
     let mut remote_stream = TcpStream::connect((remote_host, remote_port)).await?;
 
     // Create a buffer to hold the data
