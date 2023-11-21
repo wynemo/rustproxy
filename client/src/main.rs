@@ -20,8 +20,10 @@ async fn handle_client(
         let num_bytes = client_stream.read(&mut buffer).await?;
         if num_bytes == 0 {
             // Client disconnected
+            println!("client disconnet");
             break;
         }
+        println!("read from client len {}", num_bytes);
 
         // Write the length of the received data
         remote_stream
@@ -42,7 +44,7 @@ async fn handle_client(
         remote_stream.read_exact(&mut data_buffer).await?;
 
         // Write the length and data back to the client
-        client_stream.write_all(&length_buffer).await?;
+        // client_stream.write_all(&length_buffer).await?;
         client_stream.write_all(&data_buffer).await?;
     }
 

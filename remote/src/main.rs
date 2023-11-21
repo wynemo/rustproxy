@@ -21,11 +21,12 @@ async fn forward_data(
 
         let length = u32::from_be_bytes(length_buffer);
 
-        println!("read length {:?}", length);
+        println!("reading length {:?}", length);
         // Read data from the previous server
         let mut data_buffer = vec![0; length as usize];
         previous_stream.read_exact(&mut data_buffer).await?;
 
+        println!("has read length {:?}", length);
         // Write data to the final server
         final_stream.write_all(&data_buffer).await?;
 
@@ -33,9 +34,13 @@ async fn forward_data(
         if let Ok(Ok(num_bytes)) =
             time::timeout(Duration::from_secs(2), final_stream.read(&mut buffer)).await
         {
+            println!("has read from final len {}", num_bytes);
             if num_bytes == 0 {
                 break Ok(());
             }
+            previous_stream
+                .write_all(&(num_bytes as u32).to_be_bytes())
+                .await?;
             previous_stream.write_all(&buffer[..num_bytes]).await?;
         } else {
             println!("timeout");
