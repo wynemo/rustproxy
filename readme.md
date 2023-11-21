@@ -6,3 +6,6 @@
 
 3. build
 `cargo build --release --workspace`
+
+4. todo
+use https://github.com/mrmekon/ossuary
